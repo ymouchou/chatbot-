@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: base(~{::content}, 'ChatBot - Connexion', 'login')}">
+
+<div th:fragment="content" class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0"><i class="bi bi-box-arrow-in-right"></i> Connexion</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Le formulaire sera fonctionnel plus tard -->
+                    <form>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Identifiant ou Email</label>
+                            <input type="text" class="form-control" id="username" placeholder="Entrez votre email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" id="password" placeholder="Mot de passe">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100" disabled>Se connecter (Bientôt disponible)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
