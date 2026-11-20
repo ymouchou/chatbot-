@@ -23,7 +23,10 @@ class ModeleIA(
     // Relation ManyToOne vers FournisseurIA
     @ManyToOne
     @JoinColumn(name = "fournisseur_id", nullable = false)
-    var fourniseurIA: FournisseurIA? = null
+    var fourniseurIA: FournisseurIA? = null,
+
+    @OneToMany(mappedBy = "modeleIA")
+    var conversations: MutableList<Conversation> = mutableListOf()
 ) {
     constructor() : this(null, "", null, null, null, null)
 }

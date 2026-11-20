@@ -18,7 +18,9 @@ class Conversation(
 
     // Association OneToMany avec Message
     @OneToMany(mappedBy = "conversation", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var messages: MutableList<Message> = mutableListOf()
+    var messages: MutableList<Message> = mutableListOf(),
+    @ManyToOne
+    @JoinColumn("modele_id")
+    var modeleIA: ModeleIA
 ) {
-    constructor() : this(null, "", LocalDateTime.now(), mutableListOf())
 }

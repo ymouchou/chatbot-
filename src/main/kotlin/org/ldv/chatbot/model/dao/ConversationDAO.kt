@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ConversationDAO : JpaRepository<Conversation, Long>{
+    fun findAllByOrderByDateCreationDesc(): List<Conversation>
 }

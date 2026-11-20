@@ -18,6 +18,21 @@
                     <!-- D'autres liens de navigation pour le Chatbot iront ici plus tard -->
                 </ul>
             </nav>
+
+            <!-- Nouvelle conversation -->
+            <a th:href="@{/}" class="btn btn-outline-light w-100 mb-4">
+                + Nouvelle conversation
+            </a>
+
+            <h6 class="text-secondary">Historique</h6>
+            <div class="list-group">
+                <a th:each="c : ${conversations}"
+                   th:href="@{/conversations/{id}(id=${c.id})}"
+                   th:text="${c.titre}"
+                   class="list-group-item list-group-item-action"
+                   th:classappend="${conversation != null and conversation.id == c.id} ? 'active' : ''">
+                </a>
+            </div>
         </div>
     </header>
 </div>
