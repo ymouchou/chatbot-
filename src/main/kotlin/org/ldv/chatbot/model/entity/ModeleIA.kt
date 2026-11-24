@@ -28,5 +28,5 @@ class ModeleIA(
     @OneToMany(mappedBy = "modeleIA")
     var conversations: MutableList<Conversation> = mutableListOf()
 ) {
-    constructor() : this(null, "", null, null, null, null)
+    constructor() : this(null, "", null, null, null, null, mutableListOf())
 }

@@ -19,7 +19,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDateTime
 
 @Controller
-class ChatController(
+class MainController(
     private val iaServiceFactory: IAServiceFactory,
     private val conversationDAO: ConversationDAO,
     private val messageDAO: MessageDAO,

@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping
 class ChatBotController {
 
     // Route pour la page d'accueil (pointe vers templates/utilisateur/index.html)
-    @GetMapping("/")
+    /*@GetMapping("/")
     fun accueil(): String {
         return "utilisateur/index"
-    }
+    }*/
 
     // Route pour le formulaire de connexion (pointe vers templates/auth/login.html)
     @GetMapping("/login")
