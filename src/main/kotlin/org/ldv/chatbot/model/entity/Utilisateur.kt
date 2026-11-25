@@ -22,7 +22,7 @@ class Utilisateur(
     var nom: String,
 
     @Column(nullable = false, length = 510)
-    var motDePasse: String = "",
+    var motDePasse: String? = "",
 
     @Column(nullable = false)
     var actif: Boolean = true,

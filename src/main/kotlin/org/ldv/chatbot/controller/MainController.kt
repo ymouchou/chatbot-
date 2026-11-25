@@ -26,6 +26,11 @@ class MainController(
     private val modeleIADAO: ModeleIADAO
 ) {
 
+    @GetMapping("/login")
+    fun login(): String {
+        return "auth/login"
+    }
+
     // Page d'accueil : liste des conversations
     @GetMapping("/")
     fun accueil(model: Model): String {

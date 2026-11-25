@@ -13,8 +13,8 @@ class ChatBotController {
     }*/
 
     // Route pour le formulaire de connexion (pointe vers templates/auth/login.html)
-    @GetMapping("/login")
+    /*@GetMapping("/login")
     fun login(): String {
         return "auth/login"
-    }
+    }*/
 }

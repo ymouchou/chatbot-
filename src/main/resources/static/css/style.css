@@ -7,4 +7,95 @@
 
 body {
     font-family: "MaPolice", sans-serif;
+    background-color: #d2d2ef;
+    color: #1f2937;
+}
+
+.chat-layout {
+    min-height: calc(100vh - 180px);
+}
+
+/* Encadrés principaux des blocs */
+.chat-card,
+.sidebar-card {
+    min-height: 70vh;
+    max-height: 75vh;
+    border: 1px solid #dce2ea !important;
+    border-radius: 0.75rem;
+    background-color: #ffffff;
+}
+
+.sidebar-list {
+    max-height: calc(75vh - 56px);
+}
+
+/* Encadré léger autour de chaque entrée de l'historique */
+.sidebar-list .list-group-item {
+    margin: 0.35rem 0.6rem;
+    border: 1px solid #aca2a2 !important;
+    border-radius: 0.5rem !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.sidebar-list .list-group-item:hover:not(.active) {
+    background-color: #f8fafc;
+    border-color: #cbd5e1 !important;
+}
+
+/* Bloc d'accueil / zone d'échange */
+.welcome-box {
+    border: 1px solid #e6ebf2;
+    background-color: #fafbfd;
+    border-radius: 0.75rem;
+    max-width: 540px;
+    width: 100%;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Bulles de messages encadrées */
+.message-bubble {
+    max-width: 78%;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+}
+
+.message-user {
+    border: 1px solid #ffffff;
+    border-bottom-right-radius: 0.25rem !important;
+}
+
+.message-assistant {
+    border: 1px solid #dce2ea;
+    border-bottom-left-radius: 0.25rem !important;
+}
+
+/* Contrôles du formulaire en bas */
+.model-select-wrapper {
+    min-width: 195px;
+}
+
+.model-select,
+.chat-textarea,
+.model-current {
+    border: 1px solid #9b9b9e;
+    border-radius: 0.5rem;
+}
+
+.model-select:focus,
+.chat-textarea:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
+}
+
+.chat-textarea {
+    resize: none;
+}
+
+.card {
+    border-radius: 0.75rem;
 }
