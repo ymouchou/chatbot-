@@ -12,11 +12,18 @@
 
                 <!-- Menu de navigation -->
                 <nav class="navbar navbar-expand p-0">
-                    <ul class="navbar-nav gap-2">
+                    <ul class="navbar-nav gap-2 align-items-center">
                         <li class="nav-item">
                             <a class="nav-link px-2" th:href="@{/}"
                                th:classappend="${activePage} == 'accueil' or ${activePage} == 'chat' ? ' active fw-semibold text-primary' : ''">
                                 <i class="bi bi-chat-dots"></i> Chat
+                            </a>
+                        </li>
+
+                        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                            <a class="nav-link px-2" th:href="@{/admin/modeles-ia}"
+                               th:classappend="${activePage} == 'admin' ? ' active fw-semibold text-primary' : ''">
+                                <i class="bi bi-gear"></i> Gestion des modèles IA
                             </a>
                         </li>
                     </ul>

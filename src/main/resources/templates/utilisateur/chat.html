@@ -30,12 +30,39 @@
                         Aucune conversation pour le moment.
                     </div>
 
-                    <a th:each="c : ${conversations}"
-                       th:href="@{/conversations/{id}(id=${c.id})}"
-                       th:text="${c.titre}"
-                       class="list-group-item list-group-item-action border-0 py-2 px-3 small text-truncate"
-                       th:classappend="${conversation != null and conversation.id == c.id} ? 'active fw-semibold' : ''">
-                    </a>
+                    <div th:each="c : ${conversations}"
+                         class="list-group-item d-flex align-items-center justify-content-between gap-2 border-0 py-2 px-3"
+                         th:classappend="${conversation != null and conversation.id == c.id} ? 'active fw-semibold' : ''">
+
+                        <a th:href="@{/conversations/{id}(id=${c.id})}"
+                           th:text="${c.titre}"
+                           class="text-decoration-none text-truncate flex-grow-1 small"
+                           th:classappend="${conversation != null and conversation.id == c.id} ? 'text-white' : 'text-dark'">
+                        </a>
+
+                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                            <button type="button"
+                                    class="btn btn-sm px-2 py-1"
+                                    th:classappend="${conversation != null and conversation.id == c.id} ? 'btn-light text-dark' : 'btn-outline-secondary'"
+                                    data-bs-toggle="modal"
+                                    th:attr="data-bs-target='#modalRenommer-' + ${c.id}"
+                                    title="Renommer">
+                                ✏️
+                            </button>
+
+                            <form th:action="@{/conversations/{id}/supprimer(id=${c.id})}"
+                                  method="post"
+                                  class="m-0"
+                                  onsubmit="return confirm('Supprimer cette conversation ?');">
+                                <button type="submit"
+                                        class="btn btn-sm px-2 py-1"
+                                        th:classappend="${conversation != null and conversation.id == c.id} ? 'btn-danger' : 'btn-outline-danger'"
+                                        title="Supprimer">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -153,6 +180,38 @@
             </div>
         </section>
 
+    </div>
+
+    <!-- Modales de renommage (en dehors de .row) -->
+    <div th:each="c : ${conversations}">
+        <div class="modal fade text-dark fw-normal"
+             th:id="'modalRenommer-' + ${c.id}"
+             tabindex="-1"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form th:action="@{/conversations/{id}/renommer(id=${c.id})}" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Renommer la conversation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="form-label">Nouveau titre</label>
+                            <input type="text"
+                                   name="titre"
+                                   class="form-control"
+                                   th:value="${c.titre}"
+                                   maxlength="50"
+                                   required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

@@ -20,6 +20,9 @@ class ModeleIA(
 
     var cheminLogo: String? = null,
 
+    @Column(nullable = false)
+    var actif: Boolean = true,
+
     // Relation ManyToOne vers FournisseurIA
     @ManyToOne
     @JoinColumn(name = "fournisseur_id", nullable = false)
@@ -28,5 +31,5 @@ class ModeleIA(
     @OneToMany(mappedBy = "modeleIA")
     var conversations: MutableList<Conversation> = mutableListOf()
 ) {
-    constructor() : this(null, "", null, null, null, null, mutableListOf())
+    constructor() : this(null, "", null, null, null, true, null, mutableListOf())
 }
