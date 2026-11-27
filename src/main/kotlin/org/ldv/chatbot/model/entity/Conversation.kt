@@ -19,20 +19,37 @@ class Conversation(
     @Column(nullable = false)
     var dateDerniereModification: LocalDateTime = LocalDateTime.now(),
 
-    // Association OneToMany avec Message
     @OneToMany(mappedBy = "conversation", cascade = [CascadeType.ALL], orphanRemoval = true)
     var messages: MutableList<Message> = mutableListOf(),
 
     @ManyToOne
     @JoinColumn(name = "modele_id")
-    var modeleIA: ModeleIA? = null
+    var modeleIA: ModeleIA? = null,
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "utilisateur_id", nullable = false)
+    var utilisateur: Utilisateur
 ) {
     constructor() : this(
-        null,
-        "",
-        LocalDateTime.now(),
-        LocalDateTime.now(),
-        mutableListOf(),
-        null
+        id = null,
+        titre = "",
+        dateCreation = LocalDateTime.now(),
+        dateDerniereModification = LocalDateTime.now(),
+        messages = mutableListOf(),
+        modeleIA = null,
+        utilisateur = Utilisateur(
+            id = null,
+            email = "",
+            prenom = "",
+            nom = "",
+            motDePasse = "",
+            actif = true,
+            role = Role(
+                id = null,
+                nom = "",
+                nomLogique = ""
+            ),
+            conversations = mutableListOf()
+        )
     )
 }

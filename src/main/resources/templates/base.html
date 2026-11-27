@@ -18,7 +18,9 @@
 <body class="d-flex flex-column min-vh-100">
 
 <!-- Header -->
+<th:block th:if="${pageConnexion != true}">
 <header th:replace="~{fragments/header :: header(${activePage})}"></header>
+</th:block>
 
 <!-- Contenu principal -->
 <main class="container flex-grow-1 my-4">

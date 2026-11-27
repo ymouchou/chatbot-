@@ -1,5 +1,8 @@
-<div xmlns:th="http://www.thymeleaf.org">
-    <header th:fragment="header(activePage)" class="bg-white border-bottom shadow-sm">
+<div xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <header th:fragment="header(activePage)"
+            sec:authorize="isAuthenticated()"
+            class="bg-white border-bottom shadow-sm">
         <div class="container d-flex align-items-center justify-content-between py-2">
             <div class="d-flex align-items-center">
                 <!-- Logo -->
@@ -20,10 +23,34 @@
                 </nav>
             </div>
 
-            <!-- Nouvelle conversation -->
-            <a th:href="@{/}" class="btn btn-primary btn-sm text-nowrap">
-                <i class="bi bi-plus-lg"></i> Nouvelle conversation
-            </a>
+            <!-- Utilisateur connecté + Actions à droite -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end lh-1" th:if="${utilisateur != null}">
+                    <span class="small fw-semibold text-dark"
+                          th:text="${utilisateur != null
+                             ? utilisateur.prenom + ' ' + utilisateur.nom
+                             : 'Anonyme'}">
+                       Anonyme
+                    </span>
+                    <br>
+                    <small class="text-muted"
+                           th:text="${utilisateur != null
+                              ? utilisateur.role.nom
+                              : 'Visiteur'}">
+                        Visiteur
+                    </small>
+                </div>
+
+                <a th:href="@{/}" class="btn btn-primary btn-sm text-nowrap">
+                    <i class="bi bi-plus-lg"></i> Nouvelle conversation
+                </a>
+
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-danger btn-sm text-nowrap">
+                        <i class="bi bi-box-arrow-right me-1"></i> Déconnexion
+                    </button>
+                </form>
+            </div>
         </div>
     </header>
 </div>

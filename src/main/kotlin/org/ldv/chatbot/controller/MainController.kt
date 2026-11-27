@@ -1,14 +1,17 @@
 package org.ldv.chatbot.controller
 
-import org.ldv.chatbot.service.IAServiceFactory
 import org.ldv.chatbot.model.dao.ConversationDAO
 import org.ldv.chatbot.model.dao.MessageDAO
 import org.ldv.chatbot.model.dao.ModeleIADAO
+import org.ldv.chatbot.model.dao.UtilisateurDAO
 import org.ldv.chatbot.model.entity.Conversation
 import org.ldv.chatbot.model.entity.Message
 import org.ldv.chatbot.model.entity.TypeMessage
-
+import org.ldv.chatbot.model.entity.Utilisateur
+import org.ldv.chatbot.service.IAServiceFactory
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,23 +26,33 @@ class MainController(
     private val iaServiceFactory: IAServiceFactory,
     private val conversationDAO: ConversationDAO,
     private val messageDAO: MessageDAO,
-    private val modeleIADAO: ModeleIADAO
+    private val modeleIADAO: ModeleIADAO,
+    private val utilisateurDAO: UtilisateurDAO
 ) {
 
     @GetMapping("/login")
-    fun login(): String {
+    fun login(model: Model): String {
+        model.addAttribute("pageConnexion", true)
         return "auth/login"
     }
 
     // Page d'accueil : liste des conversations
     @GetMapping("/")
-    fun accueil(model: Model): String {
+    fun accueil(
+        model: Model,
+        authentication: Authentication
+    ): String {
+        // Recupere l'utilisateur de la session
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+        // Ajout de l'utilisateur à la vue
+        model.addAttribute("utilisateur", utilisateur)
+
         model.addAttribute("conversation", null)
         model.addAttribute("modeles", modeleIADAO.findAll())
         model.addAttribute("messages", emptyList<Message>())
         model.addAttribute(
             "conversations",
-            conversationDAO.findAllByOrderByDateCreationDesc()
+            conversationDAO.findAllByUtilisateurOrderByDateDerniereModificationDesc(utilisateur)
         )
         return "utilisateur/chat"
     }
@@ -48,8 +61,12 @@ class MainController(
     @PostMapping("/conversations")
     fun creerConversation(
         @RequestParam prompt: String,
-        @RequestParam idModele: Long
+        @RequestParam idModele: Long,
+        authentication: Authentication
     ): String {
+        // Recupere l'utilisateur
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+
         val modele = modeleIADAO.findById(idModele)
             .orElseThrow {
                 ResponseStatusException(
@@ -61,8 +78,8 @@ class MainController(
         val conversation = Conversation(
             titre = prompt.take(50),
             dateCreation = LocalDateTime.now(),
-
-            modeleIA = modele
+            modeleIA = modele,
+            utilisateur = utilisateur
         )
 
         val conversationEnregistree = conversationDAO.save(conversation)
@@ -102,14 +119,23 @@ class MainController(
     @GetMapping("/conversations/{id}")
     fun afficherConversation(
         @PathVariable id: Long,
-        model: Model
+        model: Model,
+        authentication: Authentication
     ): String {
-        val conversation = conversationDAO.findById(id)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        // Recupere l'utilisateur
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+        model.addAttribute("utilisateur", utilisateur)
+
+        val conversation = conversationDAO
+            .findByIdAndUtilisateur(id, utilisateur)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation introuvable")
 
         model.addAttribute(
             "conversations",
-            conversationDAO.findAllByOrderByDateCreationDesc()
+            conversationDAO
+                .findAllByUtilisateurOrderByDateDerniereModificationDesc(
+                    utilisateur
+                )
         )
         model.addAttribute("conversation", conversation)
         model.addAttribute(
@@ -124,10 +150,14 @@ class MainController(
     @PostMapping("/conversations/{id}/messages")
     fun envoyerMessage(
         @PathVariable id: Long,
-        @RequestParam prompt: String
+        @RequestParam prompt: String,
+        authentication: Authentication
     ): String {
-        val conversation = conversationDAO.findById(id)
-            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+
+        val conversation = conversationDAO
+            .findByIdAndUtilisateur(id, utilisateur)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation introuvable")
 
         val messageUtilisateur = Message(
             contenu = prompt,
@@ -160,5 +190,43 @@ class MainController(
         conversationDAO.save(conversation)
 
         return "redirect:/conversations/$id"
+    }
+
+    @PostMapping("/conversations/{id}/supprimer")
+    fun supprimerConversation(
+        @PathVariable id: Long,
+        authentication: Authentication
+    ): String {
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+        val conversation = conversationDAO
+            .findByIdAndUtilisateur(id, utilisateur)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation introuvable")
+
+        conversationDAO.delete(conversation)
+        return "redirect:/"
+    }
+
+    @PostMapping("/conversations/{id}/renommer")
+    fun renommerConversation(
+        @PathVariable id: Long,
+        @RequestParam titre: String,
+        authentication: Authentication
+    ): String {
+        val utilisateur = this.getUtilisateurConnecte(authentication)
+        val conversation = conversationDAO
+            .findByIdAndUtilisateur(id, utilisateur)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Conversation introuvable")
+
+        conversation.titre = titre.take(50)
+        conversation.dateDerniereModification = LocalDateTime.now()
+        conversationDAO.save(conversation)
+        return "redirect:/conversations/$id"
+    }
+
+    fun getUtilisateurConnecte(authentication: Authentication): Utilisateur {
+        val email = authentication.name
+        return utilisateurDAO
+            .findByEmailIgnoreCase(email)
+            ?: throw UsernameNotFoundException("Utilisateur introuvable")
     }
 }
